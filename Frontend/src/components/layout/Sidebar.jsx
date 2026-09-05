@@ -15,7 +15,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
-import { canAccessHR, canAccessPayroll, isAdmin } from "@/lib/permissions";
+import { canAccessHR, canAccessPayroll, canViewOwnPayslips, isAdmin } from "@/lib/permissions";
 import { getRoleLabel, cn } from "@/lib/utils";
 
 export function Sidebar() {
@@ -59,6 +59,13 @@ export function Sidebar() {
       href: "/payroll",
       icon: DollarSign,
       visible: canAccessPayroll(role),
+    },
+    {
+      label: "My Payslips",
+      href: "/payroll/payslips",
+      icon: FileText,
+      // Show dedicated link only for EMPLOYEE; payroll roles see all of /payroll
+      visible: canViewOwnPayslips(role) && !canAccessPayroll(role),
     },
     {
       label: "Reports",

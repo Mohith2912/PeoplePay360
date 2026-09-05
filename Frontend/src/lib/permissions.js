@@ -31,3 +31,12 @@ export function isAdmin(role) {
 export function isEmployee(role) {
   return role === "EMPLOYEE";
 }
+
+/**
+ * Employees can view their own payslips (GET /api/payslips/me).
+ * Backend enforces ownership — frontend only controls nav visibility.
+ */
+export function canViewOwnPayslips(role) {
+  if (!role) return false;
+  return isEmployee(role) || canAccessPayroll(role);
+}
