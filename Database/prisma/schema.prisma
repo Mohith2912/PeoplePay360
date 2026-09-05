@@ -279,6 +279,10 @@ model TimeOffType {
   requiresAllocation Boolean     @default(true)
   approvalRequired   Boolean     @default(true)
   payrollIntegration Boolean     @default(false)
+<<<<<<< HEAD
+=======
+  isPaid             Boolean     @default(true)
+>>>>>>> origin/master
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
 
@@ -381,6 +385,11 @@ model Payrun {
   periodStart       DateTime
   periodEnd         DateTime
   status            PayrunStatus
+<<<<<<< HEAD
+=======
+  version           Int             @default(1)
+  paymentDate       DateTime?
+>>>>>>> origin/master
   createdByUserId   String
   createdByUser     User            @relation("PayrunCreatedBy", fields: [createdByUserId], references: [id], onDelete: Restrict)
   createdAt         DateTime        @default(now())
@@ -425,6 +434,10 @@ model Payslip {
   status             PayslipStatus
   paidAt             DateTime?
   emailedAt          DateTime?
+<<<<<<< HEAD
+=======
+  snapshot           Json?
+>>>>>>> origin/master
   createdAt          DateTime      @default(now())
   updatedAt          DateTime      @updatedAt
 

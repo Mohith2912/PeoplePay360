@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { requireAuth, isPayrollReader } from "@/lib/auth";
 import { failure, handleError, success } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
@@ -18,3 +19,7 @@ export async function GET(request) {
         return handleError(error);
     }
 }
+=======
+export { payslipsGET as GET } from '@/modules/integration/payroll';
+export const runtime = 'nodejs';
+>>>>>>> origin/master

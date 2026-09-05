@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { requireAuth, isHr } from "@/lib/auth";
 import { failure, handleError, success } from "@/lib/api";
 import { ConflictError } from "@/lib/errors";
@@ -47,3 +48,7 @@ export async function POST(request) { try {
 catch (error) {
     return handleError(error);
 } }
+=======
+export { attendanceGET as GET, attendancePOST as POST } from '@/modules/integration/operations';
+export const runtime = 'nodejs';
+>>>>>>> origin/master

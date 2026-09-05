@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { requireAuth, isHr } from "@/lib/auth";
 import { failure, handleError, success } from "@/lib/api";
 import { NotFoundError } from "@/lib/errors";
@@ -9,3 +10,7 @@ function hours(days) { const seen = new Set(); return days.reduce((total, item) 
 export async function GET(request, { params }) { try { const user = await requireAuth(); if (!isHr(user.role)) return failure("HR access is not allowed for this role", 403); const result = await prisma.workingSchedule.findUnique({ where: { id: (await params).id }, include: { days: true, employees: true } }); if (!result) throw new NotFoundError("Working schedule not found"); return success(result); } catch (error) { return handleError(error); } }
 export async function PUT(request, { params }) { try { const user = await requireAuth(); if (!isHr(user.role)) return failure("HR access is not allowed for this role", 403); const id = (await params).id; const input = schema.parse(await request.json()); const result = await prisma.$transaction(async (tx) => { await tx.scheduleDay.deleteMany({ where: { workingScheduleId: id } }); return tx.workingSchedule.update({ where: { id }, data: { name: input.name, type: input.type, company: input.company, weeklyHours: hours(input.days), days: { create: input.days } }, include: { days: true } }); }); return success(result, "Working schedule updated"); } catch (error) { return handleError(error); } }
 export async function DELETE(request, { params }) { try { const user = await requireAuth(); if (!isHr(user.role)) return failure("HR access is not allowed for this role", 403); const id = (await params).id; if (await prisma.employee.count({ where: { workingScheduleId: id } })) return failure("Working schedule is assigned to employees", 409); await prisma.workingSchedule.delete({ where: { id } }); return success(null, "Working schedule deleted"); } catch (error) { return handleError(error); } }
+=======
+export { scheduleGET as GET, schedulePUT as PUT, scheduleDELETE as DELETE } from '@/modules/integration/hr';
+export const runtime = 'nodejs';
+>>>>>>> origin/master

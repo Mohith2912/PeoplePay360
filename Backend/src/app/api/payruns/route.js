@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { requireAuth, isPayrollReader } from "@/lib/auth";
 import { failure, handleError, success } from "@/lib/api";
 import { ConflictError, NotFoundError } from "@/lib/errors";
@@ -39,3 +40,7 @@ export async function POST(request) {
         return handleError(error);
     }
 }
+=======
+export { payrunsGET as GET, payrunsPOST as POST } from '@/modules/integration/payroll';
+export const runtime = 'nodejs';
+>>>>>>> origin/master

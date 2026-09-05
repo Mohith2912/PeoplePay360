@@ -45,7 +45,8 @@ export default function ContractsPage() {
 
   const load = useCallback(
     (isRetry = false) => {
-      fetchContracts({ status: statusFilter, search }, isRetry);
+      const employeeId = typeof window === "undefined" ? undefined : new URLSearchParams(window.location.search).get("employeeId") || undefined;
+      fetchContracts({ status: statusFilter, search, employeeId }, isRetry);
     },
     [fetchContracts, statusFilter, search]
   );

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { requireAuth, isHr } from "@/lib/auth";
 import { failure, handleError, success } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
@@ -19,3 +20,7 @@ export async function POST(request) { try {
 catch (error) {
     return handleError(error);
 } }
+=======
+export { typesGET as GET, typesPOST as POST } from '@/modules/integration/operations';
+export const runtime = 'nodejs';
+>>>>>>> origin/master

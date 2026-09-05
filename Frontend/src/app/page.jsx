@@ -6,21 +6,21 @@ import { useAuthStore } from "@/store/authStore";
 
 export default function RootPage() {
   const router = useRouter();
-  const { isAuthenticated, isLoading, fetchCurrentUser } = useAuthStore();
+  const { isAuthenticated, isLoading, hasCheckedSession, fetchCurrentUser } = useAuthStore();
 
   useEffect(() => {
     fetchCurrentUser();
   }, [fetchCurrentUser]);
 
   useEffect(() => {
-    if (!isLoading) {
+    if (hasCheckedSession && !isLoading) {
       if (isAuthenticated) {
         router.replace("/dashboard");
       } else {
         router.replace("/login");
       }
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [hasCheckedSession, isLoading, isAuthenticated, router]);
 
   return (
     <div className="flex h-screen w-full bg-[#050914] items-center justify-center">

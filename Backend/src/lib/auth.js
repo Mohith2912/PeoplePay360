@@ -23,7 +23,11 @@ export async function requireAuth() {
         if (!payload.sub)
             throw new Error("Missing subject");
         const user = await prisma.user.findUnique({ where: { id: payload.sub }, include: { employee: true } });
+<<<<<<< HEAD
         if (!user || !user.isActive)
+=======
+        if (!user)
+>>>>>>> origin/master
             throw new Error("User is inactive");
         return user;
     }

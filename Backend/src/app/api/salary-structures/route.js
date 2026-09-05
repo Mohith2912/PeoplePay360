@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { requireAuth, isPayrollManager, isPayrollReader } from "@/lib/auth";
 import { failure, handleError, success } from "@/lib/api";
 import { prisma } from "@/lib/prisma";
@@ -28,3 +29,7 @@ export async function POST(request) {
         return handleError(error);
     }
 }
+=======
+export { structuresGET as GET, structuresPOST as POST } from '@/modules/integration/structures';
+export const runtime = 'nodejs';
+>>>>>>> origin/master

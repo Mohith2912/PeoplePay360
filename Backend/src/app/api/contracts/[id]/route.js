@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { requireAuth, isHr } from "@/lib/auth";
 import { failure, handleError, success } from "@/lib/api";
 import { ConflictError, NotFoundError } from "@/lib/errors";
@@ -9,3 +10,7 @@ async function overlap(employeeId, startDate, endDate, id) { const result = awai
 export async function GET(request, { params }) { try { const user = await requireAuth(); if (!isHr(user.role)) return failure("HR access is not allowed for this role", 403); const result = await prisma.contract.findUnique({ where: { id: (await params).id }, include: { employee: true, salaryStructure: true } }); if (!result) throw new NotFoundError("Contract not found"); return success(result); } catch (error) { return handleError(error); } }
 export async function PUT(request, { params }) { try { const user = await requireAuth(); if (!isHr(user.role)) return failure("HR access is not allowed for this role", 403); const id = (await params).id; const input = schema.parse(await request.json()); await overlap(input.employeeId, input.startDate, input.endDate || null, id); const result = await prisma.contract.update({ where: { id }, data: input, include: { employee: true, salaryStructure: true } }); await audit(user.id, "CONTRACT_UPDATED", "CONTRACT", id); return success(result, "Contract updated"); } catch (error) { return handleError(error); } }
 export async function DELETE(request, { params }) { try { const user = await requireAuth(); if (!isHr(user.role)) return failure("HR access is not allowed for this role", 403); const id = (await params).id; const result = await prisma.contract.findUnique({ where: { id } }); if (!result) throw new NotFoundError("Contract not found"); await prisma.contract.update({ where: { id }, data: { status: "ENDED", endDate: result.endDate || new Date() } }); await audit(user.id, "CONTRACT_UPDATED", "CONTRACT", id, { action: "ENDED" }); return success(null, "Contract ended"); } catch (error) { return handleError(error); } }
+=======
+export { contractGET as GET, contractPUT as PUT, contractDELETE as DELETE } from '@/modules/integration/hr';
+export const runtime = 'nodejs';
+>>>>>>> origin/master

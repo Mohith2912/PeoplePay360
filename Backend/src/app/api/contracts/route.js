@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { requireAuth, isHr } from "@/lib/auth";
 import { failure, handleError, success } from "@/lib/api";
 import { ConflictError } from "@/lib/errors";
@@ -43,3 +44,7 @@ export async function POST(request) {
         return handleError(error);
     }
 }
+=======
+export { contractsGET as GET, contractsPOST as POST } from '@/modules/integration/hr';
+export const runtime = 'nodejs';
+>>>>>>> origin/master

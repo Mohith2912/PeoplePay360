@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, User, Briefcase, FileText, Loader2, Edit } from "lucide-react";
+import Link from "next/link";
+import { ArrowLeft, User, Briefcase, FileText, Edit, Clock, CalendarOff, WalletCards } from "lucide-react";
 import { useEmployeeStore } from "@/store/employeeStore";
 import { useContractStore } from "@/store/contractStore";
 import { useAuthStore } from "@/store/authStore";
@@ -183,6 +184,22 @@ export default function EmployeeDetailPage() {
         </div>
       )}
 
+      {emp && (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {[
+            { label: "Contracts", href: `/contracts?employeeId=${id}`, icon: FileText, count: contracts.length },
+            { label: "Attendance", href: `/attendance?employeeId=${id}`, icon: Clock },
+            { label: "Time Off", href: `/time-off/requests?employeeId=${id}`, icon: CalendarOff },
+            { label: "Allocations", href: `/time-off/allocations?employeeId=${id}`, icon: WalletCards },
+          ].map((item) => (
+            <Link key={item.label} href={item.href} className="glass-card flex items-center justify-between rounded-xl border border-slate-800 px-4 py-3 text-sm text-slate-300 transition-colors hover:border-violet-500/40 hover:text-violet-300">
+              <span className="flex items-center gap-2"><item.icon className="h-4 w-4" />{item.label}</span>
+              {item.count != null && <span className="rounded-full bg-violet-500/15 px-2 py-0.5 text-xs text-violet-300">{item.count}</span>}
+            </Link>
+          ))}
+        </div>
+      )}
+
       {/* Tabs */}
       <div className="flex gap-1 bg-slate-900/50 p-1 rounded-xl w-fit border border-slate-800">
         {TABS.map((tab) => (
@@ -237,6 +254,7 @@ export default function EmployeeDetailPage() {
                   ["Department", emp.department],
                   ["Job Position", emp.jobPosition],
                   ["Employment Type", emp.employeeType?.replace("_", " ")],
+                  ["Working Schedule", emp.workingSchedule?.name || "—"],
                   ["Status", emp.employmentStatus?.replace("_", " ")],
                   ["Date of Joining", emp.dateOfJoining || "—"],
                 ].map(([label, value]) => (
