@@ -9,20 +9,20 @@ import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
-  const { isAuthenticated, isLoading, fetchCurrentUser } = useAuthStore();
+  const { isAuthenticated, isLoading, hasCheckedSession, fetchCurrentUser } = useAuthStore();
 
   useEffect(() => {
     fetchCurrentUser();
   }, [fetchCurrentUser]);
 
   useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
+    if (hasCheckedSession && !isLoading && !isAuthenticated) {
       router.push("/login");
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [hasCheckedSession, isLoading, isAuthenticated, router]);
 
   // Loading skeleton screen while verifying session
-  if (isLoading) {
+  if (isLoading || !hasCheckedSession) {
     return (
       <div className="flex h-screen w-full bg-[#050914] text-slate-100 items-center justify-center p-6">
         <div className="space-y-4 max-w-sm w-full text-center">

@@ -51,7 +51,7 @@ export default function PayrunsPage() {
   const [actionError, setActionError] = useState(null);
 
   const canAccess = canAccessPayroll(user?.role);
-  const canManage = canManagePayroll(user?.role);
+  const canManage = canAccessPayroll(user?.role);
 
   const load = useCallback(
     (isRetry = false) => {

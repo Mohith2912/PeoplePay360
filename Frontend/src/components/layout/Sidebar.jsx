@@ -32,9 +32,9 @@ export function Sidebar() {
     },
     {
       label: "Employees",
-      href: "/employees",
+      href: role === "EMPLOYEE" && user?.employeeId ? `/employees/${user.employeeId}` : "/employees",
       icon: Users,
-      visible: canAccessHR(role),
+      visible: canAccessHR(role) || (role === "EMPLOYEE" && Boolean(user?.employeeId)),
     },
     {
       label: "Contracts",

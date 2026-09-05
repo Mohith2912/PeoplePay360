@@ -1,0 +1,8 @@
+"use client";
+import { useState } from 'react';
+export function IntegrationForm({fields,initialData={},onSubmit,onCancel,isLoading=false,submitLabel='Save'}) {
+ const [values,setValues]=useState(()=>Object.fromEntries(fields.map(f=>[f.name,initialData[f.name]??f.defaultValue??'']))),[error,setError]=useState('');
+ return <form className="space-y-4" onSubmit={async e=>{e.preventDefault();setError('');try{await onSubmit(values);}catch(e){setError(e.response?.data?.message||e.message||'Unable to save');}}}>
+ <div className="grid gap-4 sm:grid-cols-2">{fields.map(f=><label key={f.name} className="block text-sm text-slate-300">{f.label}<span className="text-rose-400">{f.required?' *':''}</span>{f.options?<select className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 p-3" required={f.required} value={values[f.name]} onChange={e=>setValues({...values,[f.name]:e.target.value})}><option value="">Select…</option>{f.options.map(o=><option key={o.value??o} value={o.value??o}>{o.label??o}</option>)}</select>:<input className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-900 p-3" required={f.required} type={f.type||'text'} min={f.min} step={f.type==='number'?'any':undefined} value={values[f.name]} onChange={e=>setValues({...values,[f.name]:e.target.value})}/>}</label>)}</div>
+ {error&&<p role="alert" className="text-rose-400">{error}</p>}<div className="flex gap-3"><button disabled={isLoading} className="rounded-lg bg-violet-600 px-5 py-2 disabled:opacity-50">{isLoading?'Saving…':submitLabel}</button>{onCancel&&<button type="button" onClick={onCancel}>Cancel</button>}</div></form>;
+}

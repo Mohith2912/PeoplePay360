@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft, Play, ShieldCheck, CreditCard, XCircle,
-  ChevronRight, AlertTriangle, RefreshCw, Users, DollarSign
+  ChevronRight, AlertTriangle, RefreshCw, Users, DollarSign, Mail
 } from "lucide-react";
 import { usePayrunStore } from "@/store/payrunStore";
 import { useAuthStore } from "@/store/authStore";
@@ -14,6 +14,7 @@ import { TableSkeleton } from "@/components/ui/Skeleton";
 import { Badge } from "@/components/ui/Badge";
 import { ValidationAuditModal } from "@/components/payroll/ValidationAuditModal";
 import { canManagePayroll, canAccessPayroll } from "@/lib/permissions";
+import { apiClient } from "@/lib/api";
 
 // ─── Status stepper configuration ────────────────────────────────────────────
 
@@ -124,6 +125,7 @@ export default function PayrunDetailPage() {
   const [showValidationModal, setShowValidationModal] = useState(false);
   const [blockingErrors, setBlockingErrors] = useState([]);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
+  const [isSending, setIsSending] = useState(false);
 
   const canAccess = canAccessPayroll(user?.role);
   const canManage = canManagePayroll(user?.role);
@@ -204,6 +206,21 @@ export default function PayrunDetailPage() {
     runAction(() => cancelPayrun(id), "Payrun cancelled.");
   };
 
+  const handleSendPayslips = async () => {
+    setActionError(null);
+    setActionSuccess(null);
+    setIsSending(true);
+    try {
+      const response = await apiClient.post(`/api/payruns/${id}/send-payslips`);
+      const result = response.data?.data || response.data;
+      setActionSuccess(`${result.sent} payslip${result.sent === 1 ? "" : "s"} sent${result.failed ? `; ${result.failed} failed` : ""}.`);
+    } catch (error) {
+      setActionError(error.response?.data?.message || "Payslip delivery failed.");
+    } finally {
+      setIsSending(false);
+    }
+  };
+
   const pr = activePayrun;
 
   // ─── Loading ───────────────────────────────────────────────────────────────
@@ -272,7 +289,7 @@ export default function PayrunDetailPage() {
         </div>
 
         {/* Actions */}
-        {!isClosed && (
+        {(!isClosed || (pr.status === "PAID" && canManage)) && (
           <div className="flex flex-wrap gap-2">
             {canCompute && (
               <ActionButton
@@ -308,6 +325,15 @@ export default function PayrunDetailPage() {
                 icon={XCircle}
                 label="Cancel"
                 variant="rose"
+              />
+            )}
+            {pr.status === "PAID" && canManage && (
+              <ActionButton
+                onClick={handleSendPayslips}
+                isLoading={isSending}
+                icon={Mail}
+                label="Send Payslips"
+                variant="violet"
               />
             )}
           </div>
