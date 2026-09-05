@@ -141,3 +141,40 @@
   color: #38BDF8;
   border: 1px solid rgba(6, 182, 212, 0.25);
 }
+
+/* Page transition animation */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.22s ease-out both;
+}
+
+/* ─── Print styles for payslip document ─────────────────────── */
+@media print {
+  /* Hide app chrome */
+  aside,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  #payslip-print {
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  #payslip-print * {
+    color: inherit !important;
+    border-color: #e5e7eb !important;
+  }
+}

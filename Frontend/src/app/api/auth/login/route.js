@@ -9,11 +9,12 @@ export async function POST(request) {
     await new Promise((resolve) => setTimeout(resolve, 500));
 
     if (email && password) {
-      let role = 'EMPLOYEE';
+      let role = 'EMPLOYEE'; // Default fallback
       if (email.includes('admin')) role = 'ADMIN';
-      else if (email.includes('hr')) role = 'HR_MANAGER';
-      else if (email.includes('payroll')) role = 'PAYROLL_ADMIN';
-      else if (email.includes('manager')) role = 'DEPT_MANAGER';
+      else if (email.includes('hr_manager')) role = 'HR_MANAGER';
+      else if (email.includes('payroll_user')) role = 'HR_PAYROLL_USER';
+      else if (email.includes('payroll_manager')) role = 'HR_PAYROLL_MANAGER';
+      else if (email.includes('employee')) role = 'EMPLOYEE';
 
       return NextResponse.json({
         token: 'mock-jwt-token-12345',

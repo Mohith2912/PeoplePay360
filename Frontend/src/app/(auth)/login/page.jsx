@@ -147,24 +147,32 @@ export default function LoginPage() {
               </button>
               <button
                 type="button"
-                onClick={() => handleQuickFill("payroll.manager@peoplepay360.com")}
+                onClick={() => handleQuickFill("payroll_manager@peoplepay360.com")}
                 className="p-2 rounded-lg bg-slate-900/60 hover:bg-slate-800/60 border border-slate-800 text-slate-300 text-left transition-colors truncate"
               >
                 <span className="text-cyan-400 font-semibold block">Payroll Mgr</span>
-                payroll.manager@...
+                payroll_manager@...
               </button>
               <button
                 type="button"
-                onClick={() => handleQuickFill("hr.manager@peoplepay360.com")}
+                onClick={() => handleQuickFill("hr_manager@peoplepay360.com")}
                 className="p-2 rounded-lg bg-slate-900/60 hover:bg-slate-800/60 border border-slate-800 text-slate-300 text-left transition-colors truncate"
               >
                 <span className="text-emerald-400 font-semibold block">HR Manager</span>
-                hr.manager@...
+                hr_manager@...
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickFill("payroll_user@peoplepay360.com")}
+                className="p-2 rounded-lg bg-slate-900/60 hover:bg-slate-800/60 border border-slate-800 text-slate-300 text-left transition-colors truncate"
+              >
+                <span className="text-blue-400 font-semibold block">Payroll User</span>
+                payroll_user@...
               </button>
               <button
                 type="button"
                 onClick={() => handleQuickFill("employee@peoplepay360.com")}
-                className="p-2 rounded-lg bg-slate-900/60 hover:bg-slate-800/60 border border-slate-800 text-slate-300 text-left transition-colors truncate"
+                className="p-2 col-span-2 sm:col-span-1 rounded-lg bg-slate-900/60 hover:bg-slate-800/60 border border-slate-800 text-slate-300 text-left transition-colors truncate"
               >
                 <span className="text-amber-400 font-semibold block">Employee</span>
                 employee@...
