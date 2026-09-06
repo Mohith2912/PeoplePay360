@@ -27,6 +27,8 @@ const CONTRACT_STATUS_VARIANT = {
   CANCELLED: "danger",
 };
 
+const formatDate = (value) => value ? new Date(value).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—";
+
 export default function EmployeeDetailPage() {
   const { id } = useParams();
   const router = useRouter();
@@ -256,7 +258,7 @@ export default function EmployeeDetailPage() {
                   ["Employment Type", emp.employeeType?.replace("_", " ")],
                   ["Working Schedule", emp.workingSchedule?.name || "—"],
                   ["Status", emp.employmentStatus?.replace("_", " ")],
-                  ["Date of Joining", emp.dateOfJoining || "—"],
+                  ["Date of Joining", formatDate(emp.dateOfJoining)],
                 ].map(([label, value]) => (
                   <div key={label} className="px-6 py-4">
                     <div className="text-[10px] text-slate-500 uppercase tracking-wider mb-1">{label}</div>
@@ -326,15 +328,19 @@ export default function EmployeeDetailPage() {
                     </div>
                     <div>
                       <div className="text-slate-500 mb-0.5">Start Date</div>
-                      <div className="text-slate-200">{contract.startDate || "—"}</div>
+                      <div className="text-slate-200">{formatDate(contract.startDate)}</div>
                     </div>
                     <div>
                       <div className="text-slate-500 mb-0.5">End Date</div>
-                      <div className="text-slate-200">{contract.endDate || "Open-ended"}</div>
+                      <div className="text-slate-200">{contract.endDate ? formatDate(contract.endDate) : "Open-ended"}</div>
                     </div>
                     <div>
                       <div className="text-slate-500 mb-0.5">Schedule</div>
                       <div className="text-slate-200">{contract.scheduleName || contract.scheduleId || "—"}</div>
+                    </div>
+                    <div>
+                      <div className="text-slate-500 mb-0.5">Employee joined</div>
+                      <div className="text-slate-200">{formatDate(contract.employeeDateOfJoining || emp.dateOfJoining)}</div>
                     </div>
                   </div>
                 </div>

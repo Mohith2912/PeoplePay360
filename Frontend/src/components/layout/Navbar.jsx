@@ -1,14 +1,55 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import { LogOut, Bell, Search, ShieldCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { Bell, ChevronRight, Home, LogOut, Menu, ShieldCheck } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { getRoleLabel } from "@/lib/utils";
+import { apiClient } from "@/lib/api";
 
-export function Navbar() {
+const pageNames = {
+  admin: "User Access",
+  attendance: "Attendance",
+  contracts: "Contracts",
+  dashboard: "Dashboard",
+  employees: "Employees",
+  payroll: "Payroll",
+  payruns: "Payruns",
+  payslips: "Payslips",
+  reports: "Reports",
+  schedules: "Working Schedules",
+  "salary-structures": "Salary Structures",
+  "time-off": "Time Off",
+  allocations: "Allocations",
+  types: "Leave Types",
+};
+
+export function Navbar({ onMenuToggle }) {
+  const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuthStore();
+  const [notifications, setNotifications] = useState([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const segments = pathname.split("/").filter(Boolean);
+  const title = [...segments].reverse().map((part) => pageNames[part]).find(Boolean) || "Workspace";
+  useEffect(() => {
+    if (!user) return;
+    apiClient.get("/api/notifications", { params: { limit: 20 } }).then((response) => {
+      setNotifications(response.data?.data || []);
+      setUnreadCount(response.data?.unreadCount || 0);
+    }).catch(() => {});
+  }, [user, pathname]);
+
+  const openNotification = async (notification) => {
+    if (!notification.readAt) {
+      await apiClient.put(`/api/notifications/${notification.id}`).catch(() => {});
+      setNotifications((items) => items.map((item) => item.id === notification.id ? { ...item, readAt: new Date().toISOString() } : item));
+      setUnreadCount((count) => Math.max(0, count - 1));
+    }
+    setNotificationsOpen(false);
+    if (notification.link) router.push(notification.link);
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -16,61 +57,46 @@ export function Navbar() {
   };
 
   return (
-    <header className="h-16 border-b border-slate-800/80 bg-[#0A0F1E]/80 backdrop-blur-xl px-6 flex items-center justify-between sticky top-0 z-20">
-      {/* Search Input Placeholder */}
-      <div className="flex items-center gap-2 max-w-md w-full">
-        <div className="relative w-full max-w-xs">
-          <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-          <input
-            type="text"
-            placeholder="Search employees, payruns..."
-            className="w-full bg-slate-900/60 border border-slate-800 rounded-xl pl-9 pr-3 py-1.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/30 transition-all"
-          />
+    <header className="topbar-shell sticky top-0 z-30 flex min-h-[4.5rem] items-center gap-4 border-b px-4 sm:px-6">
+      <button type="button" onClick={onMenuToggle} aria-label="Open navigation" className="erp-secondary-button !min-h-9 !p-2 md:hidden">
+        <Menu className="h-5 w-5" />
+      </button>
+
+      <div className="min-w-0 flex-1">
+        <div className="flex items-center gap-1.5 text-[0.68rem] font-semibold uppercase tracking-wide text-slate-500">
+          <Home className="h-3.5 w-3.5" />
+          <span>PeoplePay360</span>
+          <ChevronRight className="h-3 w-3" />
+          <span className="truncate text-blue-700">{title}</span>
         </div>
+        <h1 className="mt-0.5 truncate text-lg font-bold tracking-tight text-slate-900">{title}</h1>
       </div>
 
-      {/* Right Actions: Notifications & User Profile */}
-      <div className="flex items-center gap-4">
-        {/* Notifications placeholder */}
-        <button
-          type="button"
-          aria-label="Notifications"
-          className="w-9 h-9 rounded-xl bg-slate-900/60 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-slate-200 hover:bg-slate-800/60 transition-colors relative cursor-pointer"
-        >
-          <Bell className="w-4 h-4" />
-          <span className="w-2 h-2 rounded-full bg-violet-500 absolute top-2 right-2 ring-2 ring-[#0A0F1E]" />
+      <div className="relative">
+        <button type="button" aria-label="Notifications" aria-expanded={notificationsOpen} onClick={() => setNotificationsOpen((open) => !open)} className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-500 hover:border-blue-200 hover:bg-blue-50 hover:text-blue-700">
+          <Bell className="h-4 w-4" />
+          {unreadCount > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-700 px-1 text-[0.6rem] font-bold text-white ring-2 ring-white">{unreadCount > 9 ? "9+" : unreadCount}</span>}
         </button>
-
-        {/* User Info & Role Tag */}
-        {user ? (
-          <div className="flex items-center gap-3 pl-3 border-l border-slate-800/80">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-600 flex items-center justify-center font-bold text-white text-xs shadow-md shadow-violet-700/20">
-                {user.name ? user.name.slice(0, 2).toUpperCase() : "U"}
-              </div>
-              <div className="hidden sm:flex flex-col text-left">
-                <span className="text-xs font-semibold text-slate-100">
-                  {user.name}
-                </span>
-                <span className="text-[10px] text-violet-400 flex items-center gap-1 font-medium">
-                  <ShieldCheck className="w-3 h-3" />
-                  {getRoleLabel(user.role)}
-                </span>
-              </div>
-            </div>
-
-            {/* Logout Action */}
-            <button
-              type="button"
-              onClick={handleLogout}
-              title="Logout"
-              className="p-2 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors ml-1 cursor-pointer"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
-          </div>
-        ) : null}
+        {notificationsOpen && <div className="absolute right-0 top-12 z-50 w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl">
+          <div className="border-b border-slate-200 px-4 py-3"><p className="text-sm font-bold text-slate-900">Notifications</p><p className="text-xs text-slate-500">{unreadCount} unread</p></div>
+          <div className="max-h-80 overflow-y-auto">{notifications.length ? notifications.map((notification) => <button key={notification.id} type="button" onClick={() => openNotification(notification)} className={`block w-full border-b border-slate-100 px-4 py-3 text-left hover:bg-blue-50 ${notification.readAt ? "bg-white" : "bg-blue-50/60"}`}><span className="block text-sm font-semibold text-slate-800">{notification.title}</span><span className="mt-1 block text-xs leading-5 text-slate-500">{notification.message}</span><span className="mt-1 block text-[0.65rem] text-slate-400">{new Date(notification.createdAt).toLocaleString("en-IN")}</span></button>) : <p className="px-4 py-8 text-center text-sm text-slate-500">No notifications yet.</p>}</div>
+        </div>}
       </div>
+
+      {user && (
+        <div className="flex items-center gap-3 border-l border-slate-200 pl-3">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-700 text-xs font-bold text-white">
+            {user.name ? user.name.slice(0, 2).toUpperCase() : "U"}
+          </div>
+          <div className="hidden min-w-0 sm:block">
+            <p className="max-w-36 truncate text-xs font-bold text-slate-800">{user.name}</p>
+            <p className="flex items-center gap-1 text-[0.65rem] font-semibold text-blue-700"><ShieldCheck className="h-3 w-3" />{getRoleLabel(user.role)}</p>
+          </div>
+          <button type="button" onClick={handleLogout} aria-label="Logout" title="Logout" className="rounded-lg p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600">
+            <LogOut className="h-4 w-4" />
+          </button>
+        </div>
+      )}
     </header>
   );
 }
