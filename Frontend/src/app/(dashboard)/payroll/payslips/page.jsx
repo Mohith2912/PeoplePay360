@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { FileText, Search, ChevronRight, Calendar } from "lucide-react";
+import { FileText, Search, ChevronRight, Calendar, Download } from "lucide-react";
 import { usePayslipStore } from "@/store/payslipStore";
 import { useAuthStore } from "@/store/authStore";
 import { EmptyState } from "@/components/ui/EmptyState";
@@ -36,6 +36,7 @@ export default function PayslipsPage() {
     myError,
     myErrorInfo,
     fetchMyPayslips,
+    downloadPdf,
   } = usePayslipStore();
 
   const [search, setSearch] = useState("");
@@ -110,7 +111,7 @@ export default function PayslipsPage() {
             description="Your payslips will appear here once payroll has been processed for your salary period."
           />
         ) : (
-          <PayslipTable payslips={myPayslips} formatPeriod={formatPeriod} />
+          <PayslipTable payslips={myPayslips} formatPeriod={formatPeriod} downloadPdf={downloadPdf} />
         )}
       </div>
     );
@@ -192,13 +193,13 @@ export default function PayslipsPage() {
           }
         />
       ) : (
-        <PayslipTable payslips={payslips} formatPeriod={formatPeriod} />
+        <PayslipTable payslips={payslips} formatPeriod={formatPeriod} downloadPdf={downloadPdf} />
       )}
     </div>
   );
 }
 
-function PayslipTable({ payslips, formatPeriod }) {
+function PayslipTable({ payslips, formatPeriod, downloadPdf }) {
   return (
     <div className="glass-card rounded-2xl border border-slate-800 overflow-hidden">
       <div className="overflow-x-auto">
@@ -229,12 +230,12 @@ function PayslipTable({ payslips, formatPeriod }) {
                   </Badge>
                 </td>
                 <td className="px-6 py-4 text-right">
-                  <Link
+                  <div className="flex items-center justify-end gap-2"><button type="button" onClick={() => downloadPdf(ps.id, `${ps.payslipNumber || ps.id}.pdf`)} className="inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-2.5 py-1.5 text-xs font-semibold text-blue-700"><Download className="h-3.5 w-3.5"/>PDF</button><Link
                     href={`/payroll/payslips/${ps.id}`}
                     className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-violet-400 transition-colors"
                   >
                     View <ChevronRight className="w-3.5 h-3.5" />
-                  </Link>
+                  </Link></div>
                 </td>
               </tr>
             ))}
