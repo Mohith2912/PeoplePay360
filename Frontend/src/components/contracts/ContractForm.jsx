@@ -1,1 +1,0 @@
-export { ContractForm } from './ConnectedContractForm';
