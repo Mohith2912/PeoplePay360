@@ -9,28 +9,28 @@ import { canAccessPayroll, canManagePayroll } from "@/lib/permissions";
 const PayrollCard = ({ href, icon: Icon, title, description, badge, locked = false }) => (
   <Link
     href={locked ? "#" : href}
-    className={`group relative flex flex-col p-6 rounded-2xl border transition-all ${
+    className={`group relative flex flex-col rounded-xl border p-6 transition-all ${
       locked
-        ? "border-slate-800 bg-slate-900/30 cursor-not-allowed opacity-50"
-        : "border-slate-800 bg-slate-900/50 hover:border-violet-500/40 hover:bg-slate-800/60 hover:shadow-lg hover:shadow-violet-500/5"
+        ? "cursor-not-allowed border-slate-200 bg-slate-100 opacity-55"
+        : "border-slate-200 bg-white shadow-sm hover:-translate-y-0.5 hover:border-blue-300 hover:shadow-lg"
     }`}
     onClick={locked ? (e) => e.preventDefault() : undefined}
   >
     <div className="flex items-start justify-between mb-4">
-      <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-        <Icon className="w-5 h-5 text-violet-400" />
+      <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-blue-100 bg-blue-50">
+        <Icon className="h-5 w-5 text-blue-700" />
       </div>
       {badge && (
-        <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-violet-500/20 text-violet-300 border border-violet-500/30">
+        <span className="rounded-full border border-blue-200 bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-700">
           {badge}
         </span>
       )}
       {locked && <Lock className="w-4 h-4 text-slate-600" />}
     </div>
-    <h3 className="text-sm font-semibold text-slate-200 mb-1">{title}</h3>
-    <p className="text-xs text-slate-500 flex-1">{description}</p>
+    <h3 className="mb-1 text-sm font-bold text-slate-800">{title}</h3>
+    <p className="flex-1 text-xs leading-5 text-slate-500">{description}</p>
     {!locked && (
-      <div className="flex items-center gap-1 mt-4 text-xs text-slate-500 group-hover:text-violet-400 transition-colors">
+      <div className="mt-4 flex items-center gap-1 text-xs font-semibold text-blue-700">
         Open <ChevronRight className="w-3.5 h-3.5" />
       </div>
     )}
@@ -57,35 +57,20 @@ export default function PayrollHubPage() {
   return (
     <div className="space-y-8 animate-fade-in">
       {/* Header */}
-      <div className="border-b border-slate-800 pb-6">
-        <h1 className="text-2xl font-bold text-slate-100 flex items-center gap-2">
-          <DollarSign className="w-6 h-6 text-violet-400" />
+      <div className="erp-page-header">
+        <div><p className="text-xs font-bold uppercase tracking-wide text-blue-700">Payroll operations</p>
+        <h2 className="mt-1 flex items-center gap-2 text-2xl font-bold text-slate-900">
+          <DollarSign className="h-6 w-6 text-blue-700" />
           Payroll Hub
-        </h1>
-        <p className="text-sm text-slate-400 mt-1">
+        </h2>
+        <p className="mt-1 text-sm text-slate-500">
           Manage salary structures, run monthly payroll, and distribute payslips.
-        </p>
-      </div>
-
-      {/* Quick stats (will populate when backend is connected) */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {[
-          { label: "Salary Structures", value: "—", sub: "defined" },
-          { label: "Active Payruns", value: "—", sub: "in progress" },
-          { label: "Payslips Issued", value: "—", sub: "this year" },
-          { label: "Pending Payment", value: "—", sub: "awaiting mark-as-paid" },
-        ].map((stat) => (
-          <div key={stat.label} className="p-4 rounded-xl border border-slate-800 bg-slate-900/50">
-            <div className="text-xl font-bold text-violet-400">{stat.value}</div>
-            <div className="text-xs text-slate-400 mt-0.5">{stat.label}</div>
-            <div className="text-[10px] text-slate-600">{stat.sub}</div>
-          </div>
-        ))}
+        </p></div>
       </div>
 
       {/* Navigation cards */}
       <div className="space-y-3">
-        <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">Modules</h2>
+        <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">Payroll workspace</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <PayrollCard
             href="/payroll/salary-structures"
@@ -112,7 +97,7 @@ export default function PayrollHubPage() {
 
       {/* Role notice */}
       {!canManage && (
-        <div className="p-4 rounded-xl border border-slate-800 bg-slate-900/30 text-xs text-slate-500">
+        <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-xs text-slate-600">
           <strong className="text-slate-400">Your access level:</strong> You can view and compute payruns but cannot validate, approve payment, cancel, or email payslips. Those actions require <span className="text-violet-400">HR_PAYROLL_MANAGER</span> or <span className="text-violet-400">ADMIN</span> role.
         </div>
       )}

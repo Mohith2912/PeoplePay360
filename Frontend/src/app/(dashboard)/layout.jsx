@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Navbar } from "@/components/layout/Navbar";
@@ -9,6 +9,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 
 export default function DashboardLayout({ children }) {
   const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { isAuthenticated, isLoading, hasCheckedSession, fetchCurrentUser } = useAuthStore();
 
   useEffect(() => {
@@ -24,12 +25,12 @@ export default function DashboardLayout({ children }) {
   // Loading skeleton screen while verifying session
   if (isLoading || !hasCheckedSession) {
     return (
-      <div className="flex h-screen w-full bg-[#050914] text-slate-100 items-center justify-center p-6">
+      <div className="flex h-screen w-full items-center justify-center bg-slate-50 p-6 text-slate-900">
         <div className="space-y-4 max-w-sm w-full text-center">
-          <div className="w-12 h-12 rounded-2xl bg-violet-600/20 border border-violet-500/30 mx-auto animate-pulse flex items-center justify-center text-violet-400 font-bold">
+          <div className="mx-auto flex h-12 w-12 animate-pulse items-center justify-center rounded-xl border border-blue-200 bg-blue-50 font-bold text-blue-700">
             360
           </div>
-          <p className="text-sm font-medium text-slate-300">
+          <p className="text-sm font-medium text-slate-600">
             Verifying PeoplePay360 Session...
           </p>
           <Skeleton className="h-2 w-full max-w-xs mx-auto" />
@@ -43,11 +44,12 @@ export default function DashboardLayout({ children }) {
   }
 
   return (
-    <div className="flex min-h-screen bg-[#050914] text-slate-100">
-      <Sidebar />
-      <div className="flex-1 flex flex-col min-w-0">
-        <Navbar />
-        <main className="flex-1 p-6 md:p-8 max-w-7xl w-full mx-auto">
+    <div className="app-shell flex min-h-screen">
+      {isMenuOpen && <button type="button" className="mobile-overlay md:hidden" aria-label="Close navigation" onClick={() => setIsMenuOpen(false)} />}
+      <Sidebar isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+      <div className="app-main flex flex-col">
+        <Navbar onMenuToggle={() => setIsMenuOpen(true)} />
+        <main className="page-content flex-1">
           {children}
         </main>
       </div>

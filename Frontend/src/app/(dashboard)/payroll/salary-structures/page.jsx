@@ -9,7 +9,7 @@ import { ErrorState } from "@/components/ui/ErrorState";
 import { TableSkeleton } from "@/components/ui/Skeleton";
 import { Badge } from "@/components/ui/Badge";
 import { SalaryStructureForm } from "@/components/payroll/SalaryStructureForm";
-import { canManagePayroll } from "@/lib/permissions";
+import { canAccessPayroll, canManagePayroll } from "@/lib/permissions";
 
 const STATUS_VARIANT = { ACTIVE: "success", ARCHIVED: "default", DRAFT: "warning" };
 
@@ -38,7 +38,9 @@ export default function SalaryStructuresPage() {
   const [search, setSearch] = useState("");
   const [saveError, setSaveError] = useState(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const [selectedStructure, setSelectedStructure] = useState(null);
 
+  const canAccess = canAccessPayroll(user?.role);
   const canManage = canManagePayroll(user?.role);
 
   const load = useCallback(
@@ -67,13 +69,13 @@ export default function SalaryStructuresPage() {
     }
   };
 
-  if (!canManage) {
+  if (!canAccess) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[40vh] text-center space-y-3">
         <Lock className="w-10 h-10 text-slate-600" />
         <h2 className="text-slate-300 font-semibold">Access Restricted</h2>
         <p className="text-slate-500 text-sm max-w-sm">
-          Salary structure management requires <strong>HR_PAYROLL_MANAGER</strong> or <strong>ADMIN</strong> role.
+          Salary structure access requires a payroll role.
         </p>
       </div>
     );
@@ -127,12 +129,12 @@ export default function SalaryStructuresPage() {
             {total > 0 ? `${total} structure${total !== 1 ? "s" : ""} defined` : "Define reusable MONTHLY_FIXED salary rule sets."}
           </p>
         </div>
-        <button
+        {canManage && <button
           onClick={() => { setShowForm(true); setSaveSuccess(false); }}
           className="flex items-center gap-2 px-4 py-2 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-xl transition-colors shadow-lg shadow-violet-500/20"
         >
           <Plus className="w-4 h-4" /> New Structure
-        </button>
+        </button>}
       </div>
 
       {saveSuccess && (
@@ -169,16 +171,16 @@ export default function SalaryStructuresPage() {
           suggestion={errorInfo?.suggestion || "Live records require Mohith's backend service."}
           onRetry={() => load(true)}
           isRetrying={isRetrying}
-          actionLabel="+ New Structure"
-          onAction={() => setShowForm(true)}
+          actionLabel={canManage ? "+ New Structure" : undefined}
+          onAction={canManage ? () => setShowForm(true) : undefined}
         />
       ) : structures.length === 0 ? (
         <EmptyState
           icon={Settings}
           title="No Salary Structures"
           description="Create the first salary structure to assign it to employee contracts."
-          actionLabel="Create First Structure"
-          onAction={() => setShowForm(true)}
+          actionLabel={canManage ? "Create First Structure" : undefined}
+          onAction={canManage ? () => setShowForm(true) : undefined}
         />
       ) : (
         <div className="glass-card rounded-2xl border border-slate-800 overflow-hidden">
@@ -216,7 +218,7 @@ export default function SalaryStructuresPage() {
                       </Badge>
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-violet-400 transition-colors">
+                      <button type="button" onClick={() => setSelectedStructure(s)} className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-violet-400 transition-colors">
                         View <ChevronRight className="w-3.5 h-3.5" />
                       </button>
                     </td>
@@ -227,6 +229,11 @@ export default function SalaryStructuresPage() {
           </div>
         </div>
       )}
+      {selectedStructure && <section className="erp-card rounded-xl p-5 sm:p-6">
+        <div className="flex items-start justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-wide text-blue-700">Salary structure details</p><h2 className="mt-1 text-xl font-bold text-slate-900">{selectedStructure.name}</h2><p className="mt-1 text-sm text-slate-500">{selectedStructure.description || "No description provided."}</p></div><button type="button" className="erp-secondary-button" onClick={() => setSelectedStructure(null)}>Close</button></div>
+        <div className="mt-5 overflow-x-auto"><table className="w-full min-w-[620px] text-left text-sm"><thead><tr><th className="px-4 py-3">Sequence</th><th className="px-4 py-3">Rule</th><th className="px-4 py-3">Code</th><th className="px-4 py-3">Category</th><th className="px-4 py-3">Calculation</th></tr></thead><tbody className="divide-y divide-slate-100">{selectedStructure.rules?.map(rule=><tr key={rule.id}><td className="px-4 py-3">{rule.sequence}</td><td className="px-4 py-3 font-semibold text-slate-800">{rule.name}</td><td className="px-4 py-3">{rule.code}</td><td className="px-4 py-3">{rule.category}</td><td className="px-4 py-3">{rule.calculationType}{rule.amount!=null?` · ₹${Number(rule.amount).toLocaleString('en-IN')}`:rule.percentage!=null?` · ${rule.percentage}%`:''}</td></tr>)}</tbody></table></div>
+        {!canManage && <p className="mt-4 rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-800">Read-only access: you can review structures and rules but cannot edit them.</p>}
+      </section>}
     </div>
   );
 }

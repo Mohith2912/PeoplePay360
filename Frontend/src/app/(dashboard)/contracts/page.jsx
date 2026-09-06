@@ -19,6 +19,8 @@ const STATUS_VARIANT = {
   CANCELLED: "danger",
 };
 
+const formatDate = (value) => value ? new Date(value).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—";
+
 export default function ContractsPage() {
   const { user } = useAuthStore();
   const {
@@ -181,6 +183,7 @@ export default function ContractsPage() {
               <thead className="bg-slate-900/80 border-b border-slate-800 text-slate-400 text-xs uppercase tracking-wider">
                 <tr>
                   <th className="px-6 py-4 font-medium">Employee</th>
+                  <th className="px-6 py-4 font-medium">Date Joined</th>
                   <th className="px-6 py-4 font-medium">Wage / Month</th>
                   <th className="px-6 py-4 font-medium">Start Date</th>
                   <th className="px-6 py-4 font-medium">End Date</th>
@@ -194,9 +197,10 @@ export default function ContractsPage() {
                       <div className="font-medium text-slate-200">{c.employeeName || `Employee #${c.employeeId}`}</div>
                       <div className="text-[11px] text-slate-500">Contract #{c.id}</div>
                     </td>
+                    <td className="px-6 py-4 text-slate-300">{formatDate(c.employeeDateOfJoining)}</td>
                     <td className="px-6 py-4 text-slate-200">{formatCurrency(c.wage)}</td>
-                    <td className="px-6 py-4 text-slate-300">{c.startDate || "—"}</td>
-                    <td className="px-6 py-4 text-slate-300">{c.endDate || "Open-ended"}</td>
+                    <td className="px-6 py-4 text-slate-300">{formatDate(c.startDate)}</td>
+                    <td className="px-6 py-4 text-slate-300">{c.endDate ? formatDate(c.endDate) : "Open-ended"}</td>
                     <td className="px-6 py-4">
                       <Badge variant={STATUS_VARIANT[c.status] || "default"}>{c.status}</Badge>
                     </td>

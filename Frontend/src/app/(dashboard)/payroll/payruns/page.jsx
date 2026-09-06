@@ -73,7 +73,7 @@ export default function PayrunsPage() {
       setShowCreate(false);
       load();
     } catch (err) {
-      // createError is set in store; modal shows field-level errors
+      throw err;
     }
   };
 
@@ -112,7 +112,7 @@ export default function PayrunsPage() {
 
       {createSuccess && (
         <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 text-sm">
-          Payrun created successfully. Click it to compute employee payslips.
+          Payrun created and employee payslips computed from their contracts and salary structure.
         </div>
       )}
 
