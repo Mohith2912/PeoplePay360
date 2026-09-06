@@ -15,7 +15,12 @@ const configs = {
   allocations: { title: "Leave Allocations", description: "Manage employee leave entitlements and remaining balances.", endpoint: "/api/timeoff/allocations", columns: ["employeeName", "typeName", "allocatedAmount", "takenAmount", "remainingAmount", "status"], fields: [{ name: "employeeId", label: "Employee", source: "employees", required: true }, { name: "timeOffTypeId", label: "Leave type", source: "types", required: true }, { name: "periodStart", label: "Valid from", type: "date", required: true }, { name: "periodEnd", label: "Valid until", type: "date", required: true }, { name: "allocatedAmount", label: "Days / hours to allocate", type: "number", min: 0, required: true }] },
 };
 
-const display = (value) => value == null ? "—" : typeof value === "boolean" ? (value ? "Yes" : "No") : String(value).replace("T", " ").replace(".000Z", "");
+const display = (value) => {
+  if (value == null) return "—";
+  if (typeof value === "boolean") return value ? "Yes" : "No";
+  const text = String(value);
+  return /^\d{4}-\d{2}-\d{2}T/.test(text) ? text.replace("T", " ").replace(".000Z", "") : text;
+};
 
 export default function OperationsPage({ module }) {
   const config = configs[module];

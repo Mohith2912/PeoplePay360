@@ -12,6 +12,7 @@ import { canAccessHR } from "@/lib/permissions";
 
 const variant = { ACTIVE: "success", NOTICE_PERIOD: "warning", TERMINATED: "danger" };
 const statuses = ["ACTIVE", "NOTICE_PERIOD", "TERMINATED"];
+const EMPLOYEES_PER_PAGE = 25;
 
 export default function UnifiedEmployeeDirectory() {
   const { user } = useAuthStore();
@@ -21,7 +22,10 @@ export default function UnifiedEmployeeDirectory() {
   const [page, setPage] = useState(1);
   const [form, setForm] = useState(false);
   const [message, setMessage] = useState("");
-  const load = useCallback((retry = false) => store.fetchEmployees({ ...filters, page, limit: 50 }, retry), [filters, page, store.fetchEmployees]);
+  const load = useCallback(
+    (retry = false) => store.fetchEmployees({ ...filters, page, limit: EMPLOYEES_PER_PAGE }, retry),
+    [filters, page, store.fetchEmployees],
+  );
 
   useEffect(() => {
     const timer = setTimeout(load, 300);
@@ -29,7 +33,11 @@ export default function UnifiedEmployeeDirectory() {
   }, [load]);
 
   const updateFilters = (next) => { setFilters(next); setPage(1); };
-  const totalPages = Math.max(1, Math.ceil(store.total / 50));
+  const totalPages = Math.max(1, Math.ceil(store.total / EMPLOYEES_PER_PAGE));
+
+  useEffect(() => {
+    if (!store.isLoading && page > totalPages) setPage(totalPages);
+  }, [page, store.isLoading, totalPages]);
 
   async function save(data) {
     await store.createEmployee(data);
@@ -85,7 +93,7 @@ export default function UnifiedEmployeeDirectory() {
           })}
         </div>
       )}
-      {!store.isLoading && store.total > 50 && <nav className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3" aria-label="Employee pagination"><p className="text-sm text-slate-500">Page {page} of {totalPages} · maximum 50 employees per page</p><div className="flex gap-2"><button type="button" className="erp-secondary-button" disabled={page===1} onClick={()=>setPage(value=>Math.max(1,value-1))}>Previous</button><button type="button" className="erp-secondary-button" disabled={page>=totalPages} onClick={()=>setPage(value=>Math.min(totalPages,value+1))}>Next</button></div></nav>}
+      {!store.isLoading && store.total > EMPLOYEES_PER_PAGE && <nav className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-4 py-3" aria-label="Employee pagination"><p className="text-sm text-slate-500">Page {page} of {totalPages} · maximum {EMPLOYEES_PER_PAGE} employees per page</p><div className="flex gap-2"><button type="button" className="erp-secondary-button" disabled={page===1} onClick={()=>setPage(value=>Math.max(1,value-1))}>Previous</button><button type="button" className="erp-secondary-button" disabled={page>=totalPages} onClick={()=>setPage(value=>Math.min(totalPages,value+1))}>Next</button></div></nav>}
 
       {!store.isLoading && store.employees.length > 0 && view === "list" && (
         <div className="erp-table-wrap">
