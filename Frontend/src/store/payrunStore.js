@@ -82,8 +82,7 @@ export const usePayrunStore = create((set, get) => ({
   createPayrun: async (payrunData) => {
     set({ isSubmitting: true, createError: null, createErrorInfo: null, createFieldErrors: [] });
     try {
-      const createdPayrun = await payrunService.createPayrun(payrunData);
-      const newPayrun = await payrunService.computePayrun(createdPayrun.id, createdPayrun.version);
+      const newPayrun = await payrunService.createPayrun(payrunData);
       set((state) => ({
         payruns: [newPayrun, ...state.payruns],
         total: state.total + 1,

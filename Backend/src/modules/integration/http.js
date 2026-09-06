@@ -25,7 +25,7 @@ export function handler(fn,allowed) { return async (request,context) => {
 }; }
 export function scope(user,employeeId) { if(user.role==='EMPLOYEE') { check(user.employeeId,'No employee profile is linked to your account',403); if(employeeId) check(employeeId===user.employeeId,'Access denied',403); return user.employeeId; } return employeeId; }
 export async function list(model,where,query,include,view=x=>x) {
-  const page=Math.max(1,Number(query.page)||1),limit=Math.min(50,Math.max(1,Number(query.limit)||20));
+  const page=Math.max(1,Number(query.page)||1),limit=Math.min(200,Math.max(1,Number(query.limit)||20));
   const [rows,total]=await Promise.all([prisma[model].findMany({where,include,skip:(page-1)*limit,take:limit,orderBy:{createdAt:'desc'}}),prisma[model].count({where})]);
   return reply(rows.map(view),200,{total,page,limit});
 }

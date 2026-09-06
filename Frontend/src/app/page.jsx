@@ -23,8 +23,8 @@ export default function RootPage() {
   }, [hasCheckedSession, isLoading, isAuthenticated, router]);
 
   return (
-    <div className="flex h-screen w-full items-center justify-center bg-slate-50">
-      <div className="flex h-11 w-11 animate-pulse items-center justify-center rounded-xl border border-blue-200 bg-blue-50 font-bold text-blue-700 shadow-sm">
+    <div className="flex h-screen w-full bg-[#050914] items-center justify-center">
+      <div className="w-10 h-10 rounded-xl bg-violet-600/20 border border-violet-500/30 animate-pulse flex items-center justify-center text-violet-400 font-bold">
         360
       </div>
     </div>

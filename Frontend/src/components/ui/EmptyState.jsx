@@ -13,14 +13,14 @@ export function EmptyState({
   return (
     <div
       className={cn(
-        "erp-card flex flex-col items-center justify-center rounded-xl p-8 py-12 text-center",
+        "glass-card rounded-2xl border border-slate-800 p-8 text-center flex flex-col items-center justify-center py-12",
         className
       )}
     >
-      <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-xl border border-blue-100 bg-blue-50 text-blue-600">
+      <div className="w-14 h-14 rounded-2xl bg-slate-800/60 border border-slate-700/40 flex items-center justify-center text-slate-400 mb-4">
         <Icon className="w-7 h-7" />
       </div>
-      <h3 className="mb-1 text-base font-bold text-slate-800">{title}</h3>
+      <h3 className="text-base font-semibold text-slate-200 mb-1">{title}</h3>
       <p className="text-sm text-slate-400 max-w-sm mb-6 leading-relaxed">
         {description}
       </p>
@@ -28,7 +28,7 @@ export function EmptyState({
         <button
           type="button"
           onClick={onAction}
-          className="erp-primary-button text-sm"
+          className="px-4 py-2 rounded-xl bg-violet-600/20 hover:bg-violet-600/30 text-violet-300 border border-violet-500/30 text-sm font-medium transition-all cursor-pointer"
         >
           {actionLabel}
         </button>

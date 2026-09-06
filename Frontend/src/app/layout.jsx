@@ -7,15 +7,15 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: "#f4f7fb",
+  themeColor: "#050914",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-slate-50 text-slate-900 antialiased">
+    <html lang="en" className="dark">
+      <body className="bg-[#050914] text-slate-100 min-h-screen antialiased">
         {children}
       </body>
     </html>

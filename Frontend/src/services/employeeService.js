@@ -49,9 +49,4 @@ export const employeeService = {
     const response = await apiClient.put(`/api/employees/${id}`, employeeData);
     return response.data?.data;
   },
-
-  removeEmployee: async (id) => {
-    const response = await apiClient.delete(`/api/employees/${id}`);
-    return response.data?.data;
-  },
 };

@@ -9,7 +9,6 @@ export const useEmployeeStore = create((set) => ({
   isLoading: false,
   isRetrying: false,
   isSubmitting: false,
-  removingEmployeeId: null,
   error: null,
   errorInfo: null,
   notFound: false,
@@ -92,23 +91,6 @@ export const useEmployeeStore = create((set) => ({
     } catch (error) {
       const parsed = parseApiError(error, "employee update");
       set({ error: parsed.message, errorInfo: parsed, isSubmitting: false });
-      throw error;
-    }
-  },
-
-  removeEmployee: async (id) => {
-    set({ removingEmployeeId: id, error: null, errorInfo: null });
-    try {
-      const result = await employeeService.removeEmployee(id);
-      set((state) => ({
-        employees: state.employees.filter((employee) => employee.id !== id),
-        total: Math.max(0, state.total - 1),
-        removingEmployeeId: null,
-      }));
-      return result;
-    } catch (error) {
-      const parsed = parseApiError(error, "employee removal");
-      set({ error: parsed.message, errorInfo: parsed, removingEmployeeId: null });
       throw error;
     }
   },

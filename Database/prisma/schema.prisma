@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../../Backend/node_modules/.prisma/client"
 }
 
 datasource db {
@@ -152,7 +151,6 @@ model User {
   approvedTimeOffRequests TimeOffRequest[]   @relation("TimeOffApprovedBy")
   payrunsCreated          Payrun[]           @relation("PayrunCreatedBy")
   resolvedWarnings        PayrollWarning[]   @relation("WarningResolvedBy")
-  notifications           Notification[]
 }
 
 model Employee {
@@ -174,7 +172,6 @@ model Employee {
   workingScheduleId String?
   workingSchedule   WorkingSchedule? @relation(fields: [workingScheduleId], references: [id], onDelete: SetNull)
   status            EmployeeStatus
-  isArchived        Boolean          @default(false)
   pan               String?
   uan               String?
   pfNumber          String?
@@ -197,7 +194,6 @@ model Employee {
   @@index([email])
   @@index([department])
   @@index([status])
-  @@index([isArchived])
   @@index([employeeType])
   @@index([dateOfJoining])
 }
@@ -513,20 +509,6 @@ model AuditLog {
   @@index([entityType])
   @@index([entityId])
   @@index([createdAt])
-}
-
-model Notification {
-  id        String    @id @default(cuid())
-  userId    String
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type      String
-  title     String
-  message   String
-  link      String?
-  readAt    DateTime?
-  createdAt DateTime  @default(now())
-
-  @@index([userId, readAt, createdAt])
 }
 
 model Payment {
