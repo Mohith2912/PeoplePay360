@@ -1,0 +1,8 @@
+.local-runtime/
+**/node_modules/
+**/.next/
+**/.env
+**/.env.local
+**/.env.*.local
+**/generated/
+*.log
