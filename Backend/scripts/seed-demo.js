@@ -15,6 +15,6 @@ try{
  const contract=await db.contract.findFirst({where:{employeeId:employee.id,status:'ACTIVE'}});if(!contract)await db.contract.create({data:{employeeId:employee.id,startDate:new Date('2024-04-01'),department:employee.department,designation:employee.designation,wage:50000,salaryStructureId:structure.id,status:'ACTIVE'}});
  for(const [email,name,role] of roles)await db.user.upsert({where:{email},update:{name,role,passwordHash},create:{email,name,role,passwordHash}});
  await db.user.upsert({where:{email:'employee@peoplepay360.com'},update:{name:'Ananya Sharma',role:'EMPLOYEE',passwordHash,employeeId:employee.id},create:{email:'employee@peoplepay360.com',name:'Ananya Sharma',role:'EMPLOYEE',passwordHash,employeeId:employee.id}});
- for(const type of [{name:'Annual Leave',code:'ANNUAL',isPaid:true},{name:'Unpaid Leave',code:'UNPAID',isPaid:false}])await db.timeOffType.upsert({where:{code:type.code},update:type,create:{...type,unit:'DAYS',requiresAllocation:true,approvalRequired:true,payrollIntegration:true}});
+ for(const type of [{name:'Casual Leave',code:'CASUAL',isPaid:true,requiresAllocation:true},{name:'Annual Leave',code:'ANNUAL',isPaid:true,requiresAllocation:true},{name:'Unpaid Leave',code:'UNPAID',isPaid:false,requiresAllocation:false}])await db.timeOffType.upsert({where:{code:type.code},update:type,create:{...type,unit:'DAYS',approvalRequired:true,payrollIntegration:true}});
  console.log('Demo accounts and representative HR/payroll setup are ready. Password: password123');
 }finally{await db.$disconnect();}

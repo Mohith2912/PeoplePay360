@@ -4,6 +4,7 @@ import { ZodError } from 'zod';
 export const HR = ['HR_MANAGER','HR_PAYROLL_USER','HR_PAYROLL_MANAGER','ADMIN'];
 export const PAYROLL = ['HR_PAYROLL_USER','HR_PAYROLL_MANAGER','ADMIN'];
 export const MANAGERS = ['HR_PAYROLL_MANAGER','ADMIN'];
+export const LEAVE_MANAGERS = ['HR_MANAGER','HR_PAYROLL_MANAGER','ADMIN'];
 export function fail(message,status=400,code='VALIDATION_FAILED',extra={}) { throw Object.assign(new Error(message),{status,code,...extra}); }
 export function check(condition,message,status=400,code) { if(!condition) fail(message,status,code); }
 export const reply = (data,status=200,extra={}) => Response.json({data,...extra},{status});

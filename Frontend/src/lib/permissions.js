@@ -21,7 +21,11 @@ export function canManagePayroll(role) {
 
 export function canApproveLeave(role) {
   if (!role) return false;
-  return ["HR_MANAGER", "HR_PAYROLL_USER", "HR_PAYROLL_MANAGER", "ADMIN"].includes(role);
+  return ["HR_MANAGER", "HR_PAYROLL_MANAGER", "ADMIN"].includes(role);
+}
+
+export function canManageLeave(role) {
+  return canApproveLeave(role);
 }
 
 export function isAdmin(role) {

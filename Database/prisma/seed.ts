@@ -112,6 +112,14 @@ async function main() {
 
   const leaveTypes = [
     {
+      name: 'Casual Leave',
+      code: 'CASUAL',
+      unit: 'DAYS',
+      requiresAllocation: true,
+      approvalRequired: true,
+      payrollIntegration: true,
+    },
+    {
       name: 'Annual Leave',
       code: 'ANNUAL',
       unit: 'DAYS',
